@@ -12,37 +12,74 @@ body {
 }
 
 @media (max-width: 850px) {
-  .overlay {
+  .title-overlay {
+    width: 100vw;
+    height: 40vh
+  }
+
+  .title {
+    float: left;
+    width: 100%;
+    text-align: center;
+  }
+
+  .globe {
     float: left;
     width: 100%;
     height: 20vh;
   }
 
-  .map {
+  .sub-info {
     float: left;
     width: 100%;
-    height: 80vh;
+    text-align: center;
+  }
+
+  .map {
+    width: 100vw;
+    height: 50vh;
+  }
+
+  .info-overlay {
+    width: 100vw;
+    height: 10vh;
+    text-align: center;
   }
 }
 
 @media (min-width: 851px) and (max-width: 5759px) {
-  .overlay {
-    float: left;
-    width: 100vw;
-    font-size: 1.75vmax;
-  }
-
   .title-overlay {
-    top: 0;
+    width: 100vw;
+    height: 15vh
   }
 
-  .info-overlay {
-    bottom: 0;
+  .title {
+    float: left;
+    width: 33%;
+    text-align: left;
+  }
+
+  .globe {
+    float: left;
+    width: 33%;
+    height: 20vh;
+  }
+
+  .sub-info {
+    float: left;
+    width: 33%;
+    text-align: right;
   }
 
   .map {
     width: 100vw;
-    height: 100vh;
+    height: 75vh;
+  }
+
+  .info-overlay {
+    width: 100vw;
+    height: 10vh;
+    text-align: center;
   }
 }
 
@@ -81,39 +118,39 @@ body {
     width: 100%;
     height: calc(100vh * 2 / 8);
   }
-}
 
-.vert-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-}
+  .vert-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
 
-.title-text {
-  margin: 0;
-  font-size: 200px;
-}
+  .title-text {
+    margin: 0;
+    font-size: 200px;
+  }
 
-.sub-title {
-  margin: 0;
-  font-size: 100px;
-  text-align: center;
-  font-family: sans-serif;
-}
+  .sub-title {
+    margin: 0;
+    font-size: 100px;
+    text-align: center;
+    font-family: sans-serif;
+  }
 
-.go-link {
-  margin: 0;
-  font-size: 75px;
-  text-align: center;
-  font-family: sans-serif;
-}
+  .go-link {
+    margin: 0;
+    font-size: 75px;
+    text-align: center;
+    font-family: sans-serif;
+  }
 
-.viz-info {
-  margin-top: 40px;
-  margin-bottom: 0;
-  font-size: 160px;
-  text-align: center;
+  .viz-info {
+    margin-top: 40px;
+    margin-bottom: 0;
+    font-size: 160px;
+    text-align: center;
+  }
 }
 
 .water {
@@ -123,7 +160,7 @@ body {
 .graticule {
   fill: none;
   stroke: #F2F2F2;
-  stroke-width: 1px;
+  stroke-width: 1vw;
   /*stroke-opacity: .3;*/
 }
 

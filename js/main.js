@@ -154,6 +154,7 @@ d3.json("./js/world-110m.json", function(error, world) {
   }
 
   makeGlobe();
+  svgGlobe.selectAll("path").attr("transform", sizeGlobe("sphere2"));
   makeProjectionMap();
 
   update(options[35]);
@@ -225,18 +226,19 @@ function projectionTween(projection0, projection1) {
 function scaleAndCenterTween() {
   return function() {
     return function() {
-      var sphereBounds = d3.select("#sphere").node().getBBox();
-      // var sphereHeightMid = sphereBounds.y + sphereBounds.height / 2;
-      var widthScale = width / sphereBounds.width;
-      var heightScale = height / sphereBounds.height;
-      var scaleFactor = Math.min(widthScale, heightScale) * 0.9;
-      var xShift = (sphereBounds.x + sphereBounds.width / 2);
-      var yShift = (sphereBounds.y + sphereBounds.height / 2);
-
-      // return "translate(0," + Math.round(height / 2 - sphereHeightMid) + ")";
-      return "translate(" + (-xShift * scaleFactor + width / 2) + "," +
-      (-yShift * scaleFactor + height / 2) + "),scale(" + (1 * scaleFactor) +
-      ")";
+      return sizeGlobe("sphere")
+      // var sphereBounds = d3.select("#sphere").node().getBBox();
+      // // var sphereHeightMid = sphereBounds.y + sphereBounds.height / 2;
+      // var widthScale = width / sphereBounds.width;
+      // var heightScale = height / sphereBounds.height;
+      // var scaleFactor = Math.min(widthScale, heightScale) * 0.9;
+      // var xShift = (sphereBounds.x + sphereBounds.width / 2);
+      // var yShift = (sphereBounds.y + sphereBounds.height / 2);
+      //
+      // // return "translate(0," + Math.round(height / 2 - sphereHeightMid) + ")";
+      // return "translate(" + (-xShift * scaleFactor + width / 2) + "," +
+      // (-yShift * scaleFactor + height / 2) + "),scale(" + (1 * scaleFactor) +
+      // ")";
     };
   };
 }
@@ -256,4 +258,23 @@ function resizeSVG() {
 
   svgGlobe.attr("width", globeWidth)
     .attr("height", globeHeight);
+
+  svg.selectAll("path").attr("transform", sizeGlobe("sphere"));
+  svgGlobe.selectAll("path").attr("transform", sizeGlobe("sphere2"));
+}
+
+function sizeGlobe(sphereRef) {
+  var dimensions = sphereRef === "sphere" ?
+    [width, height] : [globeWidth, globeHeight];
+  var sphereBounds = d3.select("#" + sphereRef).node().getBBox();
+  var widthScale = dimensions[0] / sphereBounds.width;
+  var heightScale = dimensions[1] / sphereBounds.height;
+  var scaleFactor = Math.min(widthScale, heightScale) * 0.9;
+  var xShift = (sphereBounds.x + sphereBounds.width / 2);
+  var yShift = (sphereBounds.y + sphereBounds.height / 2);
+
+return "translate(" +
+  (-xShift * scaleFactor + dimensions[0] / 2) + "," +
+  (-yShift * scaleFactor + dimensions[1] / 2) +
+  "),scale(" + (1 * scaleFactor) + ")";
 }

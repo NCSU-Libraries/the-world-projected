@@ -112,7 +112,7 @@ d3.json("./js/world-110m.json", function(error, world) {
 
     svgGlobe.append("path")
       .datum(graticule)
-      .attr("class", "graticule")
+      .attr("class", "graticule grat-globe")
       .attr("d", globePath);
 
     // svgGlobe.append("path")
@@ -144,7 +144,7 @@ d3.json("./js/world-110m.json", function(error, world) {
 
     svg.append("path")
       .datum(graticule)
-      .attr("class", "graticule")
+      .attr("class", "graticule grat-proj")
       .attr("d", path);
 
     // svg.append("path")
@@ -154,8 +154,8 @@ d3.json("./js/world-110m.json", function(error, world) {
   }
 
   makeGlobe();
-  svgGlobe.selectAll("path").attr("transform", sizeGlobe("sphere2"));
   makeProjectionMap();
+  svgGlobe.selectAll("path").attr("transform", sizeGlobe("grat-globe"));
 
   update(options[35]);
 });
@@ -226,7 +226,7 @@ function projectionTween(projection0, projection1) {
 function scaleAndCenterTween() {
   return function() {
     return function() {
-      return sizeGlobe("sphere")
+      return sizeGlobe("grat-proj");
       // var sphereBounds = d3.select("#sphere").node().getBBox();
       // // var sphereHeightMid = sphereBounds.y + sphereBounds.height / 2;
       // var widthScale = width / sphereBounds.width;
@@ -259,14 +259,14 @@ function resizeSVG() {
   svgGlobe.attr("width", globeWidth)
     .attr("height", globeHeight);
 
-  svg.selectAll("path").attr("transform", sizeGlobe("sphere"));
-  svgGlobe.selectAll("path").attr("transform", sizeGlobe("sphere2"));
+  svg.selectAll("path").attr("transform", sizeGlobe("grat-proj"));
+  svgGlobe.selectAll("path").attr("transform", sizeGlobe("grat-globe"));
 }
 
-function sizeGlobe(sphereRef) {
-  var dimensions = sphereRef === "sphere" ?
+function sizeGlobe(objRef) {
+  var dimensions = objRef === "grat-proj" ?
     [width, height] : [globeWidth, globeHeight];
-  var sphereBounds = d3.select("#" + sphereRef).node().getBBox();
+  var sphereBounds = d3.select("." + objRef).node().getBBox();
   var widthScale = dimensions[0] / sphereBounds.width;
   var heightScale = dimensions[1] / sphereBounds.height;
   var scaleFactor = Math.min(widthScale, heightScale) * 0.9;

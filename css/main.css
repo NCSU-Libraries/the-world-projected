@@ -133,14 +133,16 @@ body {
 
   .sub-title {
     margin: 0;
-    font-size: 100px;
+    height: calc(100vh * 1 / 8);
+    font-size: 110px;
     text-align: center;
     font-family: sans-serif;
   }
 
   .go-link {
     margin: 0;
-    font-size: 75px;
+    height: calc(100vh * 1 / 8);
+    font-size: 80px;
     text-align: center;
     font-family: sans-serif;
   }
@@ -160,7 +162,7 @@ body {
 .graticule {
   fill: none;
   stroke: #F2F2F2;
-  stroke-width: 1vw;
+  stroke-width: 1px;
   /*stroke-opacity: .3;*/
 }
 
@@ -171,8 +173,8 @@ body {
   stroke-width: 1px;
 }
 
-.route {
+/*.route {
   stroke-width: 5px;
   stroke: #45fff4;
   fill: none;
-}
+}*/

@@ -35,15 +35,27 @@ body {
     text-align: center;
   }
 
+  .small {
+    font-size: 1.0em
+  }
+
   .map {
     width: 100vw;
-    height: 50vh;
+    height: 40vh;
   }
 
   .info-overlay {
     width: 100vw;
     height: 10vh;
     text-align: center;
+  }
+
+  .graticule {
+    stroke-width: 0.25px;
+  }
+
+  .land {
+    stroke-width: 0.5px;
   }
 }
 
@@ -55,20 +67,22 @@ body {
 
   .title {
     float: left;
-    width: 33%;
+    width: 40%;
     text-align: left;
+    padding-left: 10px
   }
 
   .globe {
     float: left;
-    width: 33%;
+    width: calc(20% - 20px);
     height: 20vh;
   }
 
   .sub-info {
     float: left;
-    width: 33%;
+    width: 40%;
     text-align: right;
+    padding-right: 10px
   }
 
   .map {
@@ -80,6 +94,14 @@ body {
     width: 100vw;
     height: 10vh;
     text-align: center;
+  }
+
+  .graticule {
+    stroke-width: 1px;
+  }
+
+  .land {
+    stroke-width: 1px;
   }
 }
 
@@ -153,24 +175,28 @@ body {
     font-size: 160px;
     text-align: center;
   }
+
+  .graticule {
+    stroke-width: 1px;
+  }
+
+  .land {
+    stroke-width: 1px;
+  }
 }
 
 .water {
-  fill: #00beff;
+  fill: hsl(195, 70%, 44%);
+}
+
+.land {
+  fill: hsl(0, 70%, 55%);
+  stroke: #000000;
 }
 
 .graticule {
   fill: none;
   stroke: #F2F2F2;
-  stroke-width: 1px;
-  /*stroke-opacity: .3;*/
-}
-
-.land {
-  fill: #ff3d3d;
-  /*fill: #f6f6f6;*/
-  stroke: #000000;
-  stroke-width: 1px;
 }
 
 /*.route {

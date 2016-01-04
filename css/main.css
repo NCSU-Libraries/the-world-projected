@@ -1,13 +1,13 @@
 body {
-  background-image: url("./ArtWallGrid.png");
-  background: #000000;
+  /*Use Art Wall grid for testing positioning*/
+  /*background-image: url("./ArtWallGrid.png");*/
+  background: #000;
   height: 100vh;
   width: 100vw;
   margin: 0;
   padding: 0;
   overflow: hidden;
   color: #F2F2F2;
-  /*color: #000;*/
   font-family: "Russo One", sans-serif;
 }
 

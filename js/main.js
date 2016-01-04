@@ -1,3 +1,4 @@
+//Global variables
 var width = parseInt(d3.select(".map").style("width")),
     height = parseInt(d3.select(".map").style("height")),
     linScale = d3.scale.linear().domain([375, 5706]).range([0.3,4]),
@@ -6,6 +7,7 @@ var width = parseInt(d3.select(".map").style("width")),
     globeHeight = parseInt(d3.select(".globe").style("height")),
     globe = false;
 
+//Array of projections used in animation
 var options = [
   {name: "Conic Equidistant", projection: d3.geo.conicEquidistant().scale(128)},
   {name: "Aitoff", projection: d3.geo.aitoff()},
@@ -61,20 +63,25 @@ var options = [
   {name: "Winkel Tripel", projection: d3.geo.winkel3()}
 ];
 
+//Apply the same rotation and center to all projections
 options.forEach(function(o) {
   o.projection.rotate([0, 0]).center([0, 0]);
 });
 
-var projection = options[35].projection;
+//Set an initial projection for map
+var projection = options[0].projection;
 
+//Create the main svg canvas
 var svg = d3.select(".map").append("svg")
     .attr("width", width)
     .attr("height", height);
 
+//Create the svg canvas for 3D spinning globe
 var svgGlobe = d3.select(".globe").append("svg")
     .attr("width", globeWidth)
     .attr("height", globeHeight);
 
+//Set up the orthographic projection for the globe
 var globeProjection = d3.geo.orthographic()
   .scale(550)
   .translate([globeWidth / 2, globeHeight / 2])
@@ -83,11 +90,13 @@ var globeProjection = d3.geo.orthographic()
 var globePath = d3.geo.path()
   .projection(globeProjection);
 
+//Test for drawing path from Raleigh to another position on the globe/map
 // var raleighToX = [
 //   [-78.6389, 35.7806],
 //   [0.1275, 51.5072]
 // ];
 
+//Load the geo data and draw the globe and map
 d3.json("./js/world-110m.json", function(error, world) {
   if (error) throw error;
 
@@ -115,6 +124,7 @@ d3.json("./js/world-110m.json", function(error, world) {
       .attr("class", "graticule grat-globe")
       .attr("d", globePath);
 
+    //Draw paths from Raleigh to 'X'
     // svgGlobe.append("path")
     //   .datum({type: "LineString", coordinates: raleighToX})
     //   .attr({
@@ -147,6 +157,7 @@ d3.json("./js/world-110m.json", function(error, world) {
       .attr("class", "graticule grat-proj")
       .attr("d", path);
 
+    //Draw paths from Raleigh to 'X'
     // svg.append("path")
     //   .datum({type: "LineString", coordinates: raleighToX})
     //   .attr("class", "route")
@@ -155,7 +166,7 @@ d3.json("./js/world-110m.json", function(error, world) {
 
   makeGlobe();
   makeProjectionMap();
-  svgGlobe.selectAll("path").attr("transform", sizeGlobe("grat-globe"));
+  svgGlobe.selectAll("path").attr("transform", sizeObjects("grat-globe"));
 
   update(options[35]);
 });
@@ -189,6 +200,7 @@ function loop() {
   iter += 1;
 }
 
+//Function to update and run animation on map projections
 function update(option) {
   d3.select(".viz-info").text(option.name);
 
@@ -198,6 +210,7 @@ function update(option) {
     .attrTween("transform", scaleAndCenterTween());
 }
 
+//Function for pretty transition between projections
 function projectionTween(projection0, projection1) {
   return function(d) {
     var t = 0;
@@ -223,10 +236,11 @@ function projectionTween(projection0, projection1) {
   };
 }
 
+//Function to return the scaling and centering information for the map
 function scaleAndCenterTween() {
   return function() {
     return function() {
-      return sizeGlobe("grat-proj");
+      return sizeObjects("grat-proj");
       // var sphereBounds = d3.select("#sphere").node().getBBox();
       // // var sphereHeightMid = sphereBounds.y + sphereBounds.height / 2;
       // var widthScale = width / sphereBounds.width;
@@ -241,6 +255,23 @@ function scaleAndCenterTween() {
       // ")";
     };
   };
+}
+
+//Function to scale and center the globe and map properly within canvas
+function sizeObjects(objRef) {
+  var dimensions = objRef === "grat-proj" ?
+    [width, height] : [globeWidth, globeHeight];
+  var sphereBounds = d3.select("." + objRef).node().getBBox();
+  var widthScale = dimensions[0] / sphereBounds.width;
+  var heightScale = dimensions[1] / sphereBounds.height;
+  var scaleFactor = Math.min(widthScale, heightScale) * 0.9;
+  var xShift = (sphereBounds.x + sphereBounds.width / 2);
+  var yShift = (sphereBounds.y + sphereBounds.height / 2);
+
+return "translate(" +
+  (-xShift * scaleFactor + dimensions[0] / 2) + "," +
+  (-yShift * scaleFactor + dimensions[1] / 2) +
+  "),scale(" + (1 * scaleFactor) + ")";
 }
 
 window.onresize = resizeSVG;
@@ -259,22 +290,6 @@ function resizeSVG() {
   svgGlobe.attr("width", globeWidth)
     .attr("height", globeHeight);
 
-  svg.selectAll("path").attr("transform", sizeGlobe("grat-proj"));
-  svgGlobe.selectAll("path").attr("transform", sizeGlobe("grat-globe"));
-}
-
-function sizeGlobe(objRef) {
-  var dimensions = objRef === "grat-proj" ?
-    [width, height] : [globeWidth, globeHeight];
-  var sphereBounds = d3.select("." + objRef).node().getBBox();
-  var widthScale = dimensions[0] / sphereBounds.width;
-  var heightScale = dimensions[1] / sphereBounds.height;
-  var scaleFactor = Math.min(widthScale, heightScale) * 0.9;
-  var xShift = (sphereBounds.x + sphereBounds.width / 2);
-  var yShift = (sphereBounds.y + sphereBounds.height / 2);
-
-return "translate(" +
-  (-xShift * scaleFactor + dimensions[0] / 2) + "," +
-  (-yShift * scaleFactor + dimensions[1] / 2) +
-  "),scale(" + (1 * scaleFactor) + ")";
+  svg.selectAll("path").attr("transform", sizeObjects("grat-proj"));
+  svgGlobe.selectAll("path").attr("transform", sizeObjects("grat-globe"));
 }

@@ -1,20 +1,11 @@
-//Global variables
-var width = parseInt(d3.select(".map").style("width")),
-    height = parseInt(d3.select(".map").style("height")),
-    linScale = d3.scale.linear().domain([375, 5706]).range([0.3,4]),
-    scale = width === 5760 * 12 / 15 ? 4 : linScale(width),
-    globeWidth = parseInt(d3.select(".globe").style("width")),
-    globeHeight = parseInt(d3.select(".globe").style("height")),
-    globe = false;
-
 //Array of projections used in animation
 var options = [
   {name: "Conic Equidistant", projection: d3.geo.conicEquidistant().scale(128)},
   {name: "Aitoff", projection: d3.geo.aitoff()},
   {name: "Albers", projection: d3.geo.albers().scale(150).parallels([20, 50])},
   {name: "August", projection: d3.geo.august().scale(65)},
-  {name: "Baker", projection: d3.geo.baker().scale(105)},
-  {name: "Boggs", projection: d3.geo.boggs().scale(155)},
+  {name: "Baker", projection: d3.geo.baker().scale(110)},
+  {name: "Boggs", projection: d3.geo.boggs().scale(160)},
   {name: "Bonne", projection: d3.geo.bonne().scale(120)},
   {name: "Bromley", projection: d3.geo.bromley().scale(160)},
   {name: "Collignon", projection: d3.geo.collignon().scale(110)},
@@ -32,9 +23,9 @@ var options = [
   {name: "Ginzburg IV", projection: d3.geo.ginzburg4().scale(145)},
   {name: "Gringorten Equal-Area", projection: d3.geo.gringorten().scale(241)},
   {name: "Guyou", projection: d3.geo.guyou().scale(152)},
-  {name: "Hammer", projection: d3.geo.hammer().scale(165)},
-  {name: "Hill", projection: d3.geo.hill().scale(130)},
-  {name: "Uninterrupted Goode Homolosine", projection: d3.geo.homolosine().scale(160)},
+  {name: "Hammer", projection: d3.geo.hammer().scale(170)},
+  {name: "Hill", projection: d3.geo.hill().scale(150)},
+  {name: "Uninterrupted Goode Homolosine", projection: d3.geo.homolosine().scale(165)},
   {name: "Kavrayskiy VII", projection: d3.geo.kavrayskiy7()},
   {name: "Lambert cylindrical equal-area", projection: d3.geo.cylindricalEqualArea().scale(160)},
   {name: "Lagrange", projection: d3.geo.lagrange().scale(120)},
@@ -49,13 +40,13 @@ var options = [
   {name: "Natural Earth", projection: d3.geo.naturalEarth().scale(160)},
   {name: "Nell–Hammer", projection: d3.geo.nellHammer().scale(160)},
   {name: "Polyconic", projection: d3.geo.polyconic().scale(100)},
-  {name: "Rectangular Polyconic", projection: d3.geo.rectangularPolyconic().rotate([100, 0]).scale(130)},
+  {name: "Rectangular Polyconic", projection: d3.geo.rectangularPolyconic().rotate([100, 0]).scale(125)},
   {name: "Robinson", projection: d3.geo.robinson()},
   {name: "Sinusoidal", projection: d3.geo.sinusoidal()},
   {name: "Sinu-Mollweide", projection: d3.geo.sinuMollweide()},
   {name: "Van der Grinten I", projection: d3.geo.vanDerGrinten().scale(75)},
   {name: "Times", projection: d3.geo.times().scale(135)},
-  {name: "Tobler World-in-a-Square", projection: d3.geo.cylindricalEqualArea().parallel(55.6539665).scale(140)},
+  {name: "Tobler World-in-a-Square", projection: d3.geo.cylindricalEqualArea().parallel(55.6539665).scale(135)},
   {name: "Van der Grinten IV", projection: d3.geo.vanDerGrinten4().scale(120)},
   {name: "Wagner IV", projection: d3.geo.wagner4().scale(170)},
   {name: "Wagner VI", projection: d3.geo.wagner6()},
@@ -68,13 +59,19 @@ options.forEach(function(o) {
   o.projection.rotate([0, 0]).center([0, 0]);
 });
 
+//Sizing variables
+var mapWidth = parseInt(d3.select(".map").style("width")),
+    mapHeight = parseInt(d3.select(".map").style("height")),
+    globeWidth = parseInt(d3.select(".globe").style("width")),
+    globeHeight = parseInt(d3.select(".globe").style("height"));
+
 //Set an initial projection for map
 var projection = options[0].projection;
 
 //Create the main svg canvas
 var svg = d3.select(".map").append("svg")
-    .attr("width", width)
-    .attr("height", height);
+    .attr("width", mapWidth)
+    .attr("height", mapHeight);
 
 //Create the svg canvas for 3D spinning globe
 var svgGlobe = d3.select(".globe").append("svg")
@@ -90,12 +87,6 @@ var globeProjection = d3.geo.orthographic()
 var globePath = d3.geo.path()
   .projection(globeProjection);
 
-//Test for drawing path from Raleigh to another position on the globe/map
-// var raleighToX = [
-//   [-78.6389, 35.7806],
-//   [0.1275, 51.5072]
-// ];
-
 //Load the geo data and draw the globe and map
 d3.json("./js/world-110m.json", function(error, world) {
   if (error) throw error;
@@ -104,7 +95,6 @@ d3.json("./js/world-110m.json", function(error, world) {
 
   //Make parts for a globe
   function makeGlobe() {
-    globe = true;
     svgGlobe.append("use")
       .attr("class", "water")
       .attr("xlink:href", "#sphere2");
@@ -123,14 +113,6 @@ d3.json("./js/world-110m.json", function(error, world) {
       .datum(graticule)
       .attr("class", "graticule grat-globe")
       .attr("d", globePath);
-
-    //Draw paths from Raleigh to 'X'
-    // svgGlobe.append("path")
-    //   .datum({type: "LineString", coordinates: raleighToX})
-    //   .attr({
-    //     "class": "route",
-    //     "d": globePath
-    //   })
   }
 
   //Make parts for the projection map
@@ -156,27 +138,11 @@ d3.json("./js/world-110m.json", function(error, world) {
       .datum(graticule)
       .attr("class", "graticule grat-proj")
       .attr("d", path);
-
-    //Draw paths from Raleigh to 'X'
-    // svg.append("path")
-    //   .datum({type: "LineString", coordinates: raleighToX})
-    //   .attr("class", "route")
-    //   .attr("d", path)
   }
 
   makeGlobe();
   makeProjectionMap();
-  svgGlobe.selectAll("path").attr("transform", sizeObjects("grat-globe"));
-
-  update(options[35]);
 });
-
-//FOF TESTING
-// var c1 = 0;
-// svg.on("mousedown", function() {
-//   update(options[c1]);
-//   c1++;
-// });
 
 //Create interval to run through projections
 var interval = setInterval(loop, 100),
@@ -186,18 +152,22 @@ var interval = setInterval(loop, 100),
 //Function to run update on each interval tick
 function loop() {
   //Change the projection every 5 secs.
-  if (iter !== 0 && iter % 50 === 0) {
-    var j = Math.floor(Math.random() * n);
-    update(options[j]);
+  if (iter % 50 === 0) {
+    d3_timer.timerOnce(changeProjection);
   }
 
-  //spin globe if globe is drawn
-  if (globe) {
+  d3_timer.timerOnce(function() {
+    //Spin globe
     globeProjection.rotate([iter / 10, 0]);
     svgGlobe.selectAll("path").attr("d", globePath);
-  }
+  });
 
   iter += 1;
+}
+
+function changeProjection() {
+  var j = Math.floor(Math.random() * n);
+  update(options[j]);
 }
 
 //Function to update and run animation on map projections
@@ -207,7 +177,7 @@ function update(option) {
   svg.selectAll("path").transition()
     .duration(1000)
     .attrTween("d", projectionTween(projection, projection = option.projection))
-    .attrTween("transform", scaleAndCenterTween());
+    .attrTween("transform", centerTween(d3.select("#sphere").node()));
 }
 
 //Function for pretty transition between projections
@@ -216,8 +186,8 @@ function projectionTween(projection0, projection1) {
     var t = 0;
 
     var projection = d3.geo.projection(project)
-      .scale(scale)
-      .translate([width / 2, height / 2]);
+      .scale(4)
+      .translate([mapWidth / 2, 0]);
 
     var path = d3.geo.path()
       .projection(projection);
@@ -236,60 +206,21 @@ function projectionTween(projection0, projection1) {
   };
 }
 
-//Function to return the scaling and centering information for the map
-function scaleAndCenterTween() {
+//Function to return centering function during update of the map
+function centerTween(sphereNode) {
   return function() {
     return function() {
-      return sizeObjects("grat-proj");
-      // var sphereBounds = d3.select("#sphere").node().getBBox();
-      // // var sphereHeightMid = sphereBounds.y + sphereBounds.height / 2;
-      // var widthScale = width / sphereBounds.width;
-      // var heightScale = height / sphereBounds.height;
-      // var scaleFactor = Math.min(widthScale, heightScale) * 0.9;
-      // var xShift = (sphereBounds.x + sphereBounds.width / 2);
-      // var yShift = (sphereBounds.y + sphereBounds.height / 2);
-      //
-      // // return "translate(0," + Math.round(height / 2 - sphereHeightMid) + ")";
-      // return "translate(" + (-xShift * scaleFactor + width / 2) + "," +
-      // (-yShift * scaleFactor + height / 2) + "),scale(" + (1 * scaleFactor) +
-      // ")";
+      var sphereBounds = sphereNode.getBBox();
+      var sphereHeightMid = sphereBounds.y + sphereBounds.height / 2;
+
+    return "translate(0," + Math.round(mapHeight / 2 - sphereHeightMid) + ")";
     };
   };
 }
 
-//Function to scale and center the globe and map properly within canvas
-function sizeObjects(objRef) {
-  var dimensions = objRef === "grat-proj" ?
-    [width, height] : [globeWidth, globeHeight];
-  var sphereBounds = d3.select("." + objRef).node().getBBox();
-  var widthScale = dimensions[0] / sphereBounds.width;
-  var heightScale = dimensions[1] / sphereBounds.height;
-  var scaleFactor = Math.min(widthScale, heightScale) * 0.9;
-  var xShift = (sphereBounds.x + sphereBounds.width / 2);
-  var yShift = (sphereBounds.y + sphereBounds.height / 2);
-
-return "translate(" +
-  (-xShift * scaleFactor + dimensions[0] / 2) + "," +
-  (-yShift * scaleFactor + dimensions[1] / 2) +
-  "),scale(" + (1 * scaleFactor) + ")";
-}
-
-window.onresize = resizeSVG;
-
-function resizeSVG() {
-  width = parseInt(d3.select(".map").style("width"));
-  height = parseInt(d3.select(".map").style("height"));
-  linScale = d3.scale.linear().domain([375, 5706]).range([0.3,4]);
-  scale = height === 2304 ? 4 : linScale(width);
-  globeWidth = parseInt(d3.select(".globe").style("width"));
-  globeHeight = parseInt(d3.select(".globe").style("height"));
-
-  svg.attr("width", width)
-    .attr("height", height);
-
-  svgGlobe.attr("width", globeWidth)
-    .attr("height", globeHeight);
-
-  svg.selectAll("path").attr("transform", sizeObjects("grat-proj"));
-  svgGlobe.selectAll("path").attr("transform", sizeObjects("grat-globe"));
-}
+//FOF TESTING
+// var c1 = 0;
+// svg.on("mousedown", function() {
+//   update(options[c1]);
+//   c1++;
+// });
